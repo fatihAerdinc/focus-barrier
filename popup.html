@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="tour.css">
+  <style>
+    :root {
+      --bg: #1a1e26; --panel: #222730; --txt: #e8eaf0; --lbl: #8da1b9;
+      --pri: #337ab7; --pri-b: #23527c; --brd: #3c4a5c; --rad: 8px;
+      --glow-blue: rgba(51,122,183,0.4);
+      --glow-core: rgba(51,122,183,0.15);
+    }
+
+    html, body {
+      margin: 0; padding: 0; background: var(--bg); width: 320px;
+      font-family: system-ui, -apple-system, sans-serif; overflow: hidden;
+    }
+
+    .main-card {
+      padding: 20px; background: var(--bg); color: var(--txt);
+      border: 1px solid var(--brd); border-radius: var(--rad);
+      box-shadow:
+        inset 0 1px 2px var(--glow-blue),
+        0 4px 15px var(--glow-core),
+        0 6px 30px rgba(0,0,0,0.5);
+      margin: 3px; box-sizing: border-box;
+    }
+
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    h2 {
+      margin: 0; font-size: 1.25rem; color: var(--pri); font-weight: 700;
+      letter-spacing: -0.02rem; filter: drop-shadow(0 2px 0 #000);
+    }
+    .app-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .app-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      flex: 0 0 auto;
+    }
+
+    label {
+      font-size: 0.7rem; font-weight: 700; color: var(--lbl);
+      text-transform: uppercase; margin-bottom: 6px; display: block;
+      letter-spacing: 0.03rem;
+    }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .label-row label { margin-bottom: 0; }
+
+	    .info-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(141,161,185,0.6);
+      color: var(--lbl);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      user-select: none;
+	      cursor: pointer;
+	      flex: 0 0 auto;
+	      background: rgba(0,0,0,0.18);
+	    }
+    .info-icon:hover {
+      border-color: var(--pri);
+      color: #fff;
+      box-shadow: 0 0 0 2px rgba(51,122,183,0.12);
+    }
+
+	    .info-popover {
+	      position: fixed;
+	      max-width: 240px;
+	      background: rgba(34,39,48,0.98);
+	      border: 1px solid var(--brd);
+	      border-radius: 10px;
+	      padding: 10px 12px;
+	      color: var(--txt);
+	      font-size: 0.78rem;
+	      line-height: 1.35;
+	      box-shadow: 0 10px 30px rgba(0,0,0,0.55);
+	      z-index: 9999;
+	      opacity: 0;
+	      transform: translateY(-4px);
+	      visibility: hidden;
+	      pointer-events: none;
+	      transition: opacity 140ms ease, transform 140ms ease;
+	    }
+	    .info-popover.show {
+	      opacity: 1;
+	      transform: translateY(0);
+	      visibility: visible;
+	      pointer-events: auto;
+	    }
+    .info-popover .title {
+      font-weight: 800;
+      color: #fff;
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+    .info-popover .body {
+      color: var(--lbl);
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%; padding: 10px; margin-bottom: 16px; border-radius: 4px;
+      border: 1px solid var(--brd); background: #12151c; color: #fff;
+      box-sizing: border-box; font-size: 0.9rem;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,0.2);
+    }
+    input:focus, select:focus { outline: none; border-color: var(--pri); }
+
+    .helper-text {
+      font-size: 0.72rem;
+      color: var(--lbl);
+      margin-top: -10px;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none; border-top: 1px solid var(--brd);
+      margin: 4px 0 16px;
+    }
+
+    /* ── Smart Detections section ── */
+    .section-label {
+      font-size: 0.65rem; font-weight: 700; color: var(--pri);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 10px; display: block;
+    }
+
+    /* Master toggle row */
+    .master-toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--panel); border: 1px solid var(--brd);
+      border-radius: 6px; padding: 10px 12px; margin-bottom: 10px;
+    }
+    .master-toggle-row .toggle-label {
+      font-size: 0.85rem; font-weight: 600; color: var(--txt);
+    }
+    .master-toggle-row .toggle-label small {
+      display: block; font-size: 0.7rem; color: var(--lbl); font-weight: 400; margin-top: 1px;
+    }
+
+    /* Sub-toggle rows */
+    .sub-toggles {
+      display: flex; flex-direction: column; gap: 6px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: max-height 0.25s ease, opacity 0.25s ease;
+      max-height: 200px; opacity: 1;
+    }
+    .sub-toggles.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #191e28; border: 1px solid #2a3244;
+      border-radius: 6px; padding: 9px 12px;
+    }
+    .toggle-row .toggle-label {
+      font-size: 0.82rem; color: var(--lbl);
+    }
+    .toggle-row .toggle-label .info-icon {
+      width: 14px;
+      height: 14px;
+      font-size: 10px;
+      margin-left: 6px;
+      transform: translateY(-0.5px);
+    }
+
+    .input-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #191e28; border: 1px solid #2a3244;
+      border-radius: 6px; padding: 9px 12px;
+      gap: 10px;
+    }
+    .input-row .row-label {
+      font-size: 0.82rem; color: var(--lbl);
+    }
+    .input-row input {
+      width: 92px;
+      margin: 0;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    /* iOS-style toggle switch */
+    .toggle-switch {
+      position: relative; width: 34px; height: 20px; flex-shrink: 0;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      position: absolute; inset: 0; border-radius: 20px;
+      background: #2d3644; cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid #3c4a5c;
+    }
+    .toggle-track::after {
+      content: ""; position: absolute;
+      top: 2px; left: 2px; width: 14px; height: 14px;
+      border-radius: 50%; background: #8da1b9;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-track {
+      background: var(--pri);
+      border-color: var(--pri-b);
+      box-shadow: 0 0 6px rgba(51,122,183,0.4);
+    }
+    .toggle-switch input:checked + .toggle-track::after {
+      transform: translateX(14px);
+      background: #fff;
+    }
+
+    /* ── Add site button ── */
+    button#addBtn {
+      width: 100%; padding: 14px; cursor: pointer; color: #fff; font-weight: 700;
+      border-radius: 6px; background: var(--pri); border: 1px solid var(--pri-b);
+      border-bottom: 4px solid var(--pri-b); transition: all 0.05s;
+      font-size: 0.95rem; text-transform: uppercase;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    button#addBtn:hover  { background: #3d8cc9; }
+    button#addBtn:active { transform: translateY(2px); border-bottom-width: 1px; }
+
+    /* ── Feedback ── */
+    #addFeedback { font-size: 0.75rem; min-height: 18px; margin: 6px 0 2px; }
+
+    /* ── Site list ── */
+    #siteList { margin-top: 10px; max-height: 175px; overflow-y: auto; padding-right: 5px; padding-bottom: 4px; }
+
+    .site-item {
+      position: relative; display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 12px; border-radius: 6px; margin-bottom: 6px;
+      background: var(--panel); border: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.2s; box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+    }
+    .site-item:hover { background: #2a313d; }
+
+    .dots-btn { cursor: pointer; padding: 0 8px; font-size: 1.1rem; color: var(--lbl); border-radius: 4px; }
+    .dots-btn:hover { background: rgba(255,255,255,0.05); }
+
+    .dropdown-menu {
+      display: none; position: absolute; right: 40px; top: 10px; background: var(--panel);
+      border: 1px solid var(--brd); box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      z-index: 10; width: 90px; border-radius: 4px; overflow: hidden;
+    }
+    .dropdown-menu div { padding: 10px; font-size: 12px; cursor: pointer; font-weight: 500; color: var(--txt); }
+    .dropdown-menu div:hover { background: var(--pri); color: white; }
+    .show { display: block !important; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--brd); border-radius: 10px; }
+
+    /* ── Header actions (support + settings) ── */
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-btn {
+      position: relative;
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      border: 1px solid var(--brd);
+      background: var(--panel);
+      color: var(--txt);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 0;
+      user-select: none;
+    }
+    .icon-btn:hover { border-color: var(--pri); box-shadow: 0 0 0 2px rgba(51,122,183,0.15); }
+    .icon { font-size: 16px; line-height: 1; transform: translateY(-0.5px); }
+    .icon-btn::after {
+      content: attr(data-label);
+      position: absolute;
+      right: 0;
+      top: 36px;
+      padding: 6px 8px;
+      background: rgba(0,0,0,0.85);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--txt);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+    .icon-btn:hover::after { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body data-fb-page="popup">
+  <div class="main-card">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="app-title">
+        <img class="app-icon" src="icons/icon48.png" alt="">
+        <h2>Focus Barrier</h2>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="openSupport" data-label="Support" aria-label="Support">
+          <span class="icon">?</span>
+        </button>
+        <button class="icon-btn" id="openSettings" data-label="Settings" aria-label="Settings">
+          <span class="icon">⚙</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Strictness Mode -->
+    <div id="strictnessSection">
+      <div class="label-row">
+        <label>Strictness Mode</label>
+        <span id="modeInfo" class="info-icon" role="button" tabindex="0" aria-label="Mode info" title="">i</span>
+      </div>
+      <select id="mode">
+        <option value="easy" selected>Easy</option>
+        <option value="balanced">Balanced</option>
+        <option value="strict">Strict</option>
+      </select>
+      <div id="modeDescription" class="helper-text"></div>
+    </div>
+
+    <hr class="divider">
+
+    <div id="smartDetectionsSection">
+      <!-- Smart Detections -->
+      <span class="section-label">Smart Detections</span>
+
+      <!-- Master toggle -->
+      <div class="master-toggle-row">
+        <div class="toggle-label">
+          Interrupt mindless usage
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="smartDetection">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+
+      <!-- Sub-toggles -->
+      <div class="sub-toggles collapsed" id="subToggles">
+        <div class="toggle-row">
+          <span class="toggle-label">Detect doomscrolling <span class="info-icon" role="button" tabindex="0" data-title="Doomscroll detection" data-info="Only runs after you’ve already passed the pause screen. If you rapidly switch Shorts/Reels/TikTok content, it re-opens pause so you re-confirm intention.">i</span></span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="doomscrollDetect">
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Limit long sessions <span class="info-icon" role="button" tabindex="0" data-title="Long sessions" data-info="After you pass the pause screen, you’ll get a halfway check-in, then the session ends and you’ll need to re-confirm intention.">i</span></span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="longVideoDetect">
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+        <div class="input-row" id="longSessionRow">
+          <span class="row-label">Long session limit (min)</span>
+          <input type="number" id="longSessionMinutes" min="5" max="180" step="5" value="60">
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div id="blockSiteSection">
+      <!-- Add site -->
+      <label>Block New Site</label>
+      <input type="text" id="newSite" placeholder="e.g. youtube.com">
+      <button id="addBtn">Add Site to Block</button>
+      <div id="addFeedback"></div>
+    </div>
+
+    <div id="siteList"></div>
+
+  </div>
+  <div id="infoPopover" class="info-popover" aria-hidden="true">
+    <div class="title" id="infoPopoverTitle"></div>
+    <div class="body" id="infoPopoverBody"></div>
+  </div>
+  <script src="popup.js"></script>
+  <script src="tour.js"></script>
+</body>
+</html>

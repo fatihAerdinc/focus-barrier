@@ -1,0 +1,141 @@
+:root {
+  --fb-tour-overlay: rgba(10, 14, 26, 0.8);
+  --fb-tour-blue: #3b82f6;
+  --fb-tour-card: #1a1f2e;
+  --fb-tour-card-border: rgba(255,255,255,0.08);
+}
+
+#fb-tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+#fb-tour-spotlight {
+  position: fixed;
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px var(--fb-tour-overlay);
+  border: none;
+  pointer-events: none;
+}
+
+.fb-tour-highlight {
+  outline: 2px solid rgba(59, 130, 246, 0.6);
+  outline-offset: 4px;
+  border-radius: 10px;
+  position: relative;
+  z-index: 10001;
+  /* Keep the highlighted control interactive during the tour. */
+  pointer-events: auto;
+}
+
+#fb-tour-tooltip {
+  position: fixed;
+  width: 240px;
+  background: var(--fb-tour-card);
+  border: 1px solid var(--fb-tour-card-border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  color: #fff;
+  z-index: 10002;
+  pointer-events: auto;
+}
+
+#fb-tour-tooltip .row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#fb-tour-tooltip .title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#fb-tour-tooltip .counter {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 700;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+
+#fb-tour-tooltip .body {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.5;
+}
+
+#fb-tour-tooltip .actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+#fb-tour-tooltip .actions.single .right {
+  width: 100%;
+}
+
+#fb-tour-tooltip .actions.single .left {
+  display: none;
+}
+
+#fb-tour-tooltip .actions .left,
+#fb-tour-tooltip .actions .right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.fb-tour-btn {
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.fb-tour-btn.ghost {
+  border: none;
+  padding: 6px 10px;
+  color: rgba(255,255,255,0.45);
+}
+
+.fb-tour-btn.primary {
+  border: none;
+  background: var(--fb-tour-blue);
+  padding: 6px 14px;
+  font-weight: 600;
+}
+
+.fb-tour-btn.full {
+  width: 100%;
+  justify-content: center;
+  display: inline-flex;
+}
+
+.fb-tour-center #fb-tour-spotlight {
+  left: 50% !important;
+  top: 50% !important;
+  width: 10px !important;
+  height: 10px !important;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+}
+
+.fb-tour-center #fb-tour-tooltip {
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%);
+}

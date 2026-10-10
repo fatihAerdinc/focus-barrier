@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Focus Barrier Settings</title>
+  <link rel="stylesheet" href="tour.css">
+  <style>
+    :root {
+      --bg: #0f1218; --panel: #171c25; --txt: #e8eaf0; --lbl: #8da1b9;
+      --pri: #337ab7; --pri-b: #23527c; --brd: #2d3644; --rad: 10px;
+      --glow-blue: rgba(51,122,183,0.35);
+      --glow-core: rgba(51,122,183,0.12);
+    }
+
+    html, body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--txt);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .wrap {
+      max-width: 840px;
+      margin: 24px auto;
+      padding: 0 16px 32px;
+      box-sizing: border-box;
+    }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      background: linear-gradient(180deg, rgba(51,122,183,0.12), rgba(0,0,0,0));
+      border: 1px solid var(--brd);
+      border-radius: var(--rad);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+      margin-bottom: 14px;
+    }
+
+    .title {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .app-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+      flex: 0 0 auto;
+    }
+    .title h1 { margin: 0; font-size: 1.1rem; letter-spacing: -0.02rem; }
+    .title small { color: var(--lbl); }
+
+    .card {
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--brd);
+      border-radius: var(--rad);
+      box-shadow:
+        inset 0 1px 2px var(--glow-blue),
+        0 10px 40px rgba(0,0,0,0.35);
+    }
+
+    .stat-badge {
+      font-size: 0.72rem; color: var(--lbl); font-weight: 700;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--brd);
+      border-radius: 999px; padding: 6px 10px; letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .stat-badge span { color: var(--pri); font-weight: 900; }
+
+    .empty {
+      color: var(--lbl);
+      line-height: 1.5;
+      font-size: 0.95rem;
+      border: 1px dashed rgba(255,255,255,0.14);
+      border-radius: 12px;
+      padding: 14px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .section {
+      padding: 16px;
+      border: 1px solid var(--brd);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .section + .section { margin-top: 14px; }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      letter-spacing: -0.01rem;
+    }
+
+    .helper {
+      color: var(--lbl);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin: 0 0 12px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--brd);
+      background: rgba(0,0,0,0.25);
+      color: var(--txt);
+      font-size: 0.95rem;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    input[type="text"]:focus {
+      border-color: rgba(51,122,183,0.7);
+      box-shadow: 0 0 0 3px rgba(51,122,183,0.15);
+    }
+
+    button.primary {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(51,122,183,0.6);
+      background: rgba(51,122,183,0.25);
+      color: var(--txt);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.primary:active { transform: translateY(1px); }
+
+    .list {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.18);
+    }
+    .item code { color: #cfe2ff; }
+    .item button {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: var(--txt);
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+    .item button:hover { border-color: rgba(255,255,255,0.25); }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.18);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--lbl);
+      font-size: 0.8rem;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.15rem;
+      color: var(--txt);
+    }
+
+    .metric small {
+      display: block;
+      color: rgba(255,255,255,0.65);
+      margin-top: 4px;
+      font-size: 0.75rem;
+      line-height: 1.35;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .modal-backdrop.show { display: flex; }
+
+    .modal {
+      width: min(520px, calc(100vw - 32px));
+      background: var(--panel);
+      border: 1px solid var(--brd);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 14px 60px rgba(0,0,0,0.55);
+    }
+
+    .modal h3 {
+      margin: 0 0 6px;
+      font-size: 1rem;
+      letter-spacing: -0.01rem;
+    }
+
+    .modal p {
+      margin: 0 0 14px;
+      color: var(--lbl);
+      line-height: 1.4;
+      font-size: 0.9rem;
+    }
+
+    .modal .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .modal button {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: var(--txt);
+      font-weight: 900;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .modal button.danger {
+      background: rgba(217,83,79,0.18);
+      border-color: rgba(217,83,79,0.45);
+    }
+
+    .modal button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .cta-row {
+      margin-top: 0;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .cta-row button {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: var(--txt);
+      font-weight: 900;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .cta-row button.primary {
+      border-color: rgba(51,122,183,0.55);
+      background: rgba(51,122,183,0.18);
+    }
+
+    .tour-hint {
+      margin-top: 10px;
+      text-align: center;
+      color: rgba(255,255,255,0.72);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body data-fb-page="options">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">
+        <div class="title-row">
+          <img class="app-icon" src="icons/icon48.png" alt="">
+          <h1>Focus Barrier Settings</h1>
+        </div>
+      </div>
+      <div class="stat-badge">Interventions: <span id="interventionCount">0</span></div>
+    </div>
+
+    <div class="card">
+      <div class="section">
+        <h2>Info</h2>
+        <div class="empty">
+          This settings page currently focuses on Permanent Block and your total intervention count.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Countdown (Seconds)</h2>
+        <p class="helper">
+          This controls how long the pause screen makes you wait after typing YES. Only counts down while you stay on that tab.
+        </p>
+        <div class="row" id="countdownSection">
+          <input id="timer" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 10">
+          <button id="timerSaveBtn" class="primary">Save</button>
+        </div>
+      </div>
+
+      <div id="general" class="section">
+        <h2>Permanent Block (Domains)</h2>
+        <p class="helper">
+          Sites in this list are hard-blocked: you can’t pass the pause screen to enter.
+          If you try to visit one, you’ll be redirected to a block page.
+        </p>
+        <div class="row">
+          <input id="megaDomainInput" type="text" placeholder="e.g. youtube.com">
+          <button id="megaAddBtn" class="primary">Add</button>
+        </div>
+        <div id="megaList" class="list"></div>
+      </div>
+
+      <div class="section">
+        <h2>Analytics</h2>
+        <p class="helper">
+          These numbers are stored locally in this browser profile. They are useful for your resume, but they are not cross-user telemetry.
+        </p>
+        <div class="metrics-grid">
+          <div class="metric">
+            <span>Blocked attempts</span>
+            <strong id="metricBlockedAttempts">0</strong>
+          </div>
+          <div class="metric">
+            <span>Pause views</span>
+            <strong id="metricPauseViews">0</strong>
+          </div>
+          <div class="metric">
+            <span>Pause continues</span>
+            <strong id="metricPauseContinues">0</strong>
+          </div>
+          <div class="metric">
+            <span>Pause abandons</span>
+            <strong id="metricPauseAbandons">0</strong>
+          </div>
+          <div class="metric">
+            <span>Doomscroll triggers</span>
+            <strong id="metricDoomscrollTriggers">0</strong>
+          </div>
+          <div class="metric">
+            <span>Halfway nudges</span>
+            <strong id="metricLongHalfway">0</strong>
+          </div>
+          <div class="metric">
+            <span>Session expiries</span>
+            <strong id="metricLongExpiries">0</strong>
+          </div>
+          <div class="metric">
+            <span>Avg intercept latency</span>
+            <strong id="metricInterceptLatency">0 ms</strong>
+            <small id="metricInterceptDetail">Decision-time measurement</small>
+          </div>
+          <div class="metric">
+            <span>Installs on this browser</span>
+            <strong id="metricInstallCount">0</strong>
+            <small id="metricFirstInstall">First install: n/a</small>
+          </div>
+          <div class="metric">
+            <span>Continue rate</span>
+            <strong id="metricContinueRate">0%</strong>
+            <small id="metricContinueDetail">Continues / pause views</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="cta-row">
+          <button id="privacyBtn" type="button">Privacy Policy</button>
+          <button id="tutorialBtn" type="button" class="primary">How to Use This Extension</button>
+        </div>
+        <div id="tourHint" class="tour-hint" hidden>
+          Tour ready. Now open the Focus Barrier extension popup to begin.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h3 id="confirmTitle">Are you sure?</h3>
+      <p id="confirmBody"></p>
+      <div class="actions">
+        <button id="confirmCancel" type="button">Cancel</button>
+        <button id="confirmOk" type="button" class="danger" disabled>Remove (5)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+  <script src="tour.js"></script>
+</body>
+</html>
